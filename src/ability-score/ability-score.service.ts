@@ -1,7 +1,7 @@
 import { AbilityScore, AbilityScoreDocument } from './schemas/ability-score.schema';
 import { CreateAbilityScoreDto } from './dto/create-ability-score.dto';
 
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { UpdateAbilityScoreDto } from './dto/update-ability-score.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -24,8 +24,17 @@ export class AbilityScoreService {
    }
 
    public async getById(id: string): Promise<AbilityScore> { 
+
+      try {
+         return await this.abilityScoreModel.findById(id).exec(); 
+         
+      } catch (error) {
+         throw new NotFoundException({
+            statusCode: HttpStatus.NOT_FOUND,
+            message: 'Não foi encontardo nenhum Ability Score!'
+         })
+      }
       
-      return await this.abilityScoreModel.findById(id).exec(); 
    }
 
    public async update(id: string, updateDto: UpdateAbilityScoreDto) { 

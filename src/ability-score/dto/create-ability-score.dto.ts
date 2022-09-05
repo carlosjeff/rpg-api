@@ -1,26 +1,27 @@
+import { errorMessage } from './../../common/helpers/validation-error-message.helper';
 import { Type } from "class-transformer";
 import { ArrayMinSize, IsNotEmpty, IsNotEmptyObject, IsString, MaxLength, MinLength, minLength, ValidateNested } from "class-validator";
 import { Skill } from "../schemas/skill.schemas";
 
 export class CreateAbilityScoreDto {
   
-    @IsNotEmpty()
-    @IsString()
-    @MinLength(2)
+    @IsNotEmpty({message: errorMessage.IsNotEmpty})
+    @IsString({message: errorMessage.IsString})
+    @MinLength(2, {message: errorMessage.MinLength})
     readonly name: string;
 
-    @IsNotEmpty()
-    @IsString()
-    @MinLength(2)
-    @MaxLength(3)
+    @IsNotEmpty({message: errorMessage.IsNotEmpty})
+    @IsString({message: errorMessage.IsString})
+    @MinLength(2, {message: errorMessage.MinLength})
+    @MaxLength(3, {message: errorMessage.MaxLength})
     readonly abbreviation: string;
 
-    @IsNotEmpty()
-    @IsString()
+    @IsNotEmpty({message: errorMessage.IsNotEmpty})
+    @IsString({message: errorMessage.IsString})
     readonly desc: string;
 
-    @IsNotEmpty()
-    @ArrayMinSize(1)
+    @IsNotEmpty({message: errorMessage.IsNotEmpty})
+    @ArrayMinSize(1, {message: errorMessage.ArrayMinSize})
     @Type(() => Skill)
     @ValidateNested({each: true})
     @IsNotEmptyObject({nullable: false},{each: true})

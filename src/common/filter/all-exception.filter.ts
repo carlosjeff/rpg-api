@@ -16,6 +16,8 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const request = ctx.getRequest();
     const response = ctx.getResponse();
 
+    console.log('filter',  exception);
+
     const { status, body } = exception instanceof HttpException ?
       {
         status: exception.getStatus(),
@@ -30,6 +32,8 @@ export class AllExceptionsFilter implements ExceptionFilter {
           path: request.path
         }
       };
+
+     
 
     this.httpAdapter.reply(response,body, status)
 

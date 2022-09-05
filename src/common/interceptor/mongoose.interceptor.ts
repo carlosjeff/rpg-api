@@ -12,7 +12,6 @@ function MongooseClassSerializerInterceptor(classToIntercept: Type,): typeof Cla
       if (!(document instanceof Document)) {
         return document;
       }
- 
       return plainToInstance(classToIntercept, document.toJSON());
     }
  
@@ -22,7 +21,6 @@ function MongooseClassSerializerInterceptor(classToIntercept: Type,): typeof Cla
       if (Array.isArray(response)) {
         return response.map(this.changePlainObjectToClass);
       }
- 
       return this.changePlainObjectToClass(response);
     }
  

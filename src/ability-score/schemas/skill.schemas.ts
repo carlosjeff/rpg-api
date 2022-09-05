@@ -1,14 +1,15 @@
 import { Prop, Schema } from "@nestjs/mongoose";
-import { Expose } from "class-transformer";
+import { Expose, Transform } from "class-transformer";
 
 @Schema()
 export class Skill {
+
+    
+    _id: string;
    
     @Prop()
-    @Expose()
     name: string;
 
     @Prop([String])
-    @Expose()
     desc: string[];
 }

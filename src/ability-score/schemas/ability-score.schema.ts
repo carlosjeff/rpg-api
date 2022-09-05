@@ -23,6 +23,7 @@ export class AbilityScore {
     desc: string;
 
     @Prop([Skill])
+    @Transform(({value}) => value.map(s => <Skill>{...s, _id: s._id.toString()}))
     skills: Skill[]
    
 }

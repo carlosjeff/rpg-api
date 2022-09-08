@@ -14,7 +14,6 @@ export class AbilityScoreService {
    
    public async create(createDto: CreateAbilityScoreDto): Promise<AbilityScore> {
            
-
       return await this.abilityScoreModel.create(createDto);
    }
 
@@ -25,20 +24,15 @@ export class AbilityScoreService {
 
    public async getById(id: string): Promise<AbilityScore> { 
 
-      const abilityScore = await this.abilityScoreModel.findOne({_id: id}).exec();
-
-
-      return  abilityScore
-         
-      
+      return await this.abilityScoreModel.findOne({_id: id}).exec();
    }
 
-   public async update(id: string, updateDto: UpdateAbilityScoreDto) { 
+   public async update(id: string, updateDto: UpdateAbilityScoreDto): Promise<AbilityScore>{ 
       
-      return await this.abilityScoreModel.updateOne({_id: id},updateDto); 
+      return await this.abilityScoreModel.findByIdAndUpdate({_id: id},updateDto,{returnDocument: 'after'}); 
    }
 
-   public async delete(id: string) { 
+   public async delete(id: string): Promise<AbilityScore> { 
       
       return await this.abilityScoreModel.findByIdAndDelete(id); 
    }

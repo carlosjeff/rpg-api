@@ -2,7 +2,7 @@ import { ParseObjectIdPipe } from './../common/pipe/parse-object-id.pipe';
 import { UpdateAbilityScoreDto } from './dto/update-ability-score.dto';
 import { CreateAbilityScoreDto } from './dto/create-ability-score.dto';
 import { AbilityScoreService } from './ability-score.service';
-import { Body, ClassSerializerInterceptor, Controller, Delete, Get, Param, Post, Put, Res, UseInterceptors, HttpStatus, HostParam, Req, HttpException, NotFoundException, UseFilters, InternalServerErrorException } from '@nestjs/common';
+import { Body, ClassSerializerInterceptor, Controller, Delete, Get, Param, Post, Put, Res, UseInterceptors, HttpStatus, HostParam, Req, HttpException, NotFoundException, UseFilters, InternalServerErrorException, BadRequestException } from '@nestjs/common';
 import MongooseClassSerializerInterceptor  from '../common/interceptor/mongoose.interceptor'
 import { AbilityScore } from './schemas/ability-score.schema'
 import { Response, Request  } from 'express';
@@ -16,22 +16,34 @@ export class AbilityScoreController {
    constructor(private readonly abilityScoreService: AbilityScoreService) {}
 
    @Post()
-   public async create(@Body() createDto: CreateAbilityScoreDto, @Res({ passthrough: true }) res: Response) {
+   public async create(
+         @Body() createDto: CreateAbilityScoreDto, 
+         @Res({ passthrough: true }) res: Response): Promise<AbilityScore> {
 
-      const abilityScore = await this.abilityScoreService.create(createDto);
-
-      res.location(locationURL(res,abilityScore._id));
-      res.status(HttpStatus.CREATED)
-      return abilityScore
+      try {
+         
+         const abilityScore = await this.abilityScoreService.create(createDto);
+   
+         res.status(HttpStatus.CREATED)
+            .location(locationURL(res,abilityScore._id));
+         return abilityScore
+      } catch (error) {
+         throw new BadRequestException({
+            statusCode: 404,
+            message: 'Não foi possivel criar Ability Score!'
+         })
+      }
    }
 
    @Get()
-   public async getAll() { 
-      return this.abilityScoreService.getAll();;
+   public async getAll(): Promise<AbilityScore[]> { 
+      return this.abilityScoreService.getAll();
    }
 
    @Get(':id')
-   public async getById(@Res({ passthrough: true }) res: Response ,@Param('id', ParseObjectIdPipe) id: string) { 
+   public async getById(
+         @Res({ passthrough: true }) res: Response ,
+         @Param('id', ParseObjectIdPipe) id: string): Promise<AbilityScore> { 
 
       const abilityScore = await this.abilityScoreService.getById(id);
       
@@ -50,7 +62,7 @@ export class AbilityScoreController {
    public async update(
          @Param('id', ParseObjectIdPipe) id: string, 
          @Body() updateDto: UpdateAbilityScoreDto, 
-         @Res({ passthrough: true }) res: Response) { 
+         @Res({ passthrough: true }) res: Response): Promise<AbilityScore>{ 
       
       
       if(!(await this.abilityScoreService.getById(id))){
@@ -63,17 +75,17 @@ export class AbilityScoreController {
          
       const abilityScore = await this.abilityScoreService.update(id, updateDto);
 
-      res.location(locationURL(res, id));
       res.status(HttpStatus.OK)
-      return  abilityScore
+         .location(locationURL(res, id));
+      return abilityScore
    }
 
    @Delete(':id')
-   public async delete(@Res({ passthrough: true }) res: Response, @Param('id', ParseObjectIdPipe) id: string) { 
+   public async delete(
+         @Res({ passthrough: true }) res: Response, 
+         @Param('id', ParseObjectIdPipe) id: string): Promise<string> { 
 
-      const abilityScore = await this.abilityScoreService.getById(id);
-
-      if(!abilityScore){
+      if(!(await this.abilityScoreService.getById(id))){
          throw new NotFoundException({
             statusCode: 404,
             message: 'Não foi encontardo nenhum Ability Score!'

@@ -1,7 +1,6 @@
-import { Type } from "@nestjs/common";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { Exclude, Expose, Transform } from "class-transformer";
-import { SchemaTypes, Types } from "mongoose";
+import { Exclude, Transform } from "class-transformer";
+import { TransformObjectIdToString } from "src/common/functions/transform-objectid-to-strint";
 import { Skill } from "./skill.schemas";
 
 export type AbilityScoreDocument = AbilityScore & Document;
@@ -9,7 +8,7 @@ export type AbilityScoreDocument = AbilityScore & Document;
 @Schema()
 export class AbilityScore {
    
-     @Transform(( {obj}) => typeof obj._id == 'string' ? obj._id : obj._id.toString())
+    @TransformObjectIdToString()
     _id: string;
 
     @Prop()
@@ -23,12 +22,7 @@ export class AbilityScore {
     desc: string;
 
     @Prop([Skill])
-    @Transform(({obj}) => 
-        obj.skills.map(s => <Skill>{
-            ...s, 
-            _id: typeof s._id == 'string' ? s._id : s._id.toString()
-        }
-    ))
+    @TransformObjectIdToString()
     skills: Skill[]
    
 }

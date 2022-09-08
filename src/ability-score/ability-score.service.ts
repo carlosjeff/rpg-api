@@ -25,15 +25,11 @@ export class AbilityScoreService {
 
    public async getById(id: string): Promise<AbilityScore> { 
 
-      try {
-         return await this.abilityScoreModel.findById(id).exec(); 
+      const abilityScore = await this.abilityScoreModel.findOne({_id: id}).exec();
+
+
+      return  abilityScore
          
-      } catch (error) {
-         throw new NotFoundException({
-            statusCode: HttpStatus.NOT_FOUND,
-            message: 'Não foi encontardo nenhum Ability Score!'
-         })
-      }
       
    }
 
@@ -42,7 +38,7 @@ export class AbilityScoreService {
       return await this.abilityScoreModel.updateOne({_id: id},updateDto); 
    }
 
-   public async delete(id: string): Promise<AbilityScore> { 
+   public async delete(id: string) { 
       
       return await this.abilityScoreModel.findByIdAndDelete(id); 
    }

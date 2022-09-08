@@ -9,7 +9,7 @@ export type AbilityScoreDocument = AbilityScore & Document;
 @Schema()
 export class AbilityScore {
    
-    @Transform(({ value }) => value.toString())
+     @Transform(( {obj}) => typeof obj._id == 'string' ? obj._id : obj._id.toString())
     _id: string;
 
     @Prop()
@@ -23,7 +23,12 @@ export class AbilityScore {
     desc: string;
 
     @Prop([Skill])
-    @Transform(({value}) => value.map(s => <Skill>{...s, _id: s._id.toString()}))
+    @Transform(({obj}) => 
+        obj.skills.map(s => <Skill>{
+            ...s, 
+            _id: typeof s._id == 'string' ? s._id : s._id.toString()
+        }
+    ))
     skills: Skill[]
    
 }

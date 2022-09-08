@@ -23,8 +23,8 @@ export class CreateAbilityScoreDto {
     @IsNotEmpty({message: errorMessage.IsNotEmpty})
     @ArrayMinSize(1, {message: errorMessage.ArrayMinSize})
     @Type(() => Skill)
-    @ValidateNested({each: true})
-    @IsNotEmptyObject({nullable: false},{each: true})
+    @ValidateNested({each: true, message: errorMessage.ValidateNested})
+    @IsNotEmptyObject({nullable: false},{each: true, message: errorMessage.IsNotEmptyObject})
     readonly skills: Skill[]
    
 }
